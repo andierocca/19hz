@@ -25,12 +25,13 @@ def main():
 		for event_id in event_ids:
 			print event_id
 			try:
-				writer.writerow(format_event(event_id[7:-1]))
+				event_data = format_event(event_id[7:-1])
+				if event_data != None:
+					writer.writerow(event_data)
 			except:
 				print 'error'
 				writer.writerow(['ERROR', ("https://www.facebook.com/events/" + event_id[7:-1])])
 
-	#print format_event("1008010612609330")
 	f.close()
 
 """
@@ -54,13 +55,20 @@ def format_event(event_id):
 	json = get_json(event_id)
 
 	values = list()
+
+	start_str = get_field(json, start)
+	start_date = format_datetime(start_str, True, "%a: %b %d")
+
+	#if date is before today don't enter
+	if start_date == None:
+		return None
+
 	for f in Fields:
 		values.append(get_field(json, f))
 
-	start_str = get_field(json, start)
 	end_str = get_field(json, end)
 
-	values.insert(0, format_datetime(start_str, True, "%a: %b %d"))
+	values.insert(0, start_date)
 	#would hold ?
 	values.insert(2, "")
 	values.insert(4, format_datetime(start_str, False, "%I:%M%p") + "-" + format_datetime(end_str, False, "%I:%M%p"))
@@ -83,6 +91,9 @@ def format_datetime(dt_str, is_date, pattern):
 
 	#convert to datetime object
 	dt = datetime.datetime.strptime(dt_str[:-5], "%Y-%m-%dT%H:%M:%S")
+	#don't format past events
+	if dt < datetime.datetime.now():
+		return None
 	if is_date:
 		return dt.date().strftime(pattern)
 	else:
