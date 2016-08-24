@@ -1,6 +1,6 @@
 # 19hz
 http://19hz.info is a calendar for electronic music events in several cities.
-Because events have shifted to being broadcasted on facebook, I see it as necessary for
+Because events have shifted to being broadcasted on facebook, I would like for
 event listings to be accessible to people who either choose not to take part in social media
 or those who do not see the wide range of events in their area (or areas they're visiting).
 
